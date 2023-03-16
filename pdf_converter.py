@@ -18,7 +18,7 @@ def hydrate_html_with_bionic(html_folder):
         for span in spans:
             words = span.get_text().split()
             for i in range(len(words)):
-                if re.match('([a-z]|[A-Z])', words[i][0]) != None:
+                if re.match(r'([a-z]|[A-Z])', words[i][0]) != None:
                     middle = len(words[i]) // 2
                     words[i] = f'<strong>{words[i][:middle]}</strong>{words[i][middle:]}</span>'
             new_text = " ".join(words)
@@ -26,9 +26,11 @@ def hydrate_html_with_bionic(html_folder):
             tmp = BeautifulSoup(new_text, 'html.parser')
             span.append(tmp)
 
-        # minified = minify_html.minify(code=soup.prettify("utf-8"), remove_processing_instructions=True)
+        minified = minify_html.minify(
+            code=soup.prettify(), remove_processing_instructions=True)
+        minified = re.sub(r'(\s<\/strong>\s)', '</strong>', minified)
         with open(f'.{html_folder}/{html_folder}_hydrated.html', "wb") as f_output:
-            f_output.write(soup.prettify("utf-8"))
+            f_output.write(minified.encode('utf-8'))
 
 
 def convert_pdf(filename):
