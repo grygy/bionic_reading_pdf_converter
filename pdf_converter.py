@@ -33,10 +33,15 @@ def hydrate_html_with_bionic(html_folder):
             f_output.write(minified.encode('utf-8'))
 
 
+def convert_html_to_pdf(html_folder):
+    os.system(f'wkhtmltopdf -T 0 -B 0 -L 0 -R 0 --enable-local-file-access --zoom 1.2 .{html_folder}/{html_folder}_hydrated.html {html_folder}_bionic.pdf')
+
+
 def convert_pdf(filename):
     html_folder = filename.split('.')[0]
     convert_pdf_to_html(filename, html_folder)
     hydrate_html_with_bionic(html_folder)
+    convert_html_to_pdf(html_folder)
 
 
 if __name__ == '__main__':
